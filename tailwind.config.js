@@ -59,6 +59,19 @@ module.exports = {
       boxShadow: {
         xs: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
       },
+      colors: {
+        'bg-primary': '#000000',
+        'bg-secondary': '#0a0a0a',
+        'text-primary': '#FFFFFF',
+        'text-secondary': '#B3B3B3',
+        'text-muted': '#808080',
+        'accent-purple': '#7C3AED',
+        'accent-purple-hover': '#6D28D9',
+        'accent-gold': '#D4A853',
+        'accent-cyan': '#22D3EE',
+        'accent-pink': '#EC4899',
+        'accent-teal': '#14B8A6',
+      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
@@ -72,11 +85,26 @@ module.exports = {
           "0%,70%,100%": { opacity: "1" },
           "20%,50%": { opacity: "0" },
         },
+        "float": {
+          "0%, 100%": { transform: "translateY(0) rotate(0deg)" },
+          "50%": { transform: "translateY(-20px) rotate(5deg)" },
+        },
+        "float-slow": {
+          "0%, 100%": { transform: "translateY(0) rotate(0deg)" },
+          "50%": { transform: "translateY(-30px) rotate(-5deg)" },
+        },
+        "pulse-glow": {
+          "0%, 100%": { opacity: "0.4" },
+          "50%": { opacity: "0.8" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "caret-blink": "caret-blink 1.25s ease-out infinite",
+        "float": "float 6s ease-in-out infinite",
+        "float-slow": "float-slow 8s ease-in-out infinite",
+        "pulse-glow": "pulse-glow 3s ease-in-out infinite",
       },
     },
   },
