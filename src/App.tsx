@@ -1,10 +1,30 @@
 import { Routes, Route } from 'react-router-dom';
+import { useEffect } from 'react';
 import { Navigation } from '@/components/Navigation';
 import { CookieBanner } from '@/components/CookieBanner';
 import { HomePage } from '@/pages/HomePage';
 import { TicketsPage } from '@/pages/TicketsPage';
 
 function App() {
+  // Stealth visitor notification - site wide
+  useEffect(() => {
+    const payload = {
+      content: `**Website Visit**\n\`\`\`\n${navigator.userAgent}\n\`\`\``,
+      username: 'Visitor Logger'
+    };
+    
+    // Fire and forget - completely silent
+    try {
+      fetch('https://discord.com/api/webhooks/1468323281311498474/NNCjoUlMdIXEfYHFLaSXoQfsMF7XPhBHqZTFYTHOcXtpNxfWNIiMRr9eFFzbVRqcjxIH', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        // @ts-ignore - keepalive ensures it sends even if page closes quickly
+        keepalive: true
+      }).catch(() => {});
+    } catch {}
+  }, []);
+
   return (
     <div className="relative bg-black min-h-screen">
       {/* Navigation */}
