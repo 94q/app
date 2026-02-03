@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
+import type { Variants } from 'framer-motion';
 import { FloatingTriangles } from '@/components/FloatingTriangles';
 import { fadeInUp, staggerContainer } from '@/lib/animations';
 
-const cardStagger = {
+const cardStagger: Variants = {
   hidden: {},
   visible: {
     transition: { staggerChildren: 0.18 },
   },
 };
 
-const cardItem = {
+const cardItem: Variants = {
   hidden: { opacity: 0, y: 24 },
   visible: {
     opacity: 1,
@@ -70,12 +71,12 @@ export const TicketsPage: React.FC = () => {
             >
               <div className="pb-4 border-b border-white/10">
                 <p className="text-xs font-semibold tracking-wider text-purple-200 uppercase">Ticket Tier</p>
-                <h3 className="mt-2 text-2xl font-semibold text-white">Early Bird -- General Admission</h3>
+                <h3 className="mt-2 text-2xl font-semibold text-white">Early Bird — General Admission</h3>
               </div>
               <div className="py-6 flex-1">
                 <p className="text-purple-100/90">
                   Full access to all speaker sessions, live performances, and networking receptions. Includes curated
-                  food & drinks throughout the event. Best price available -- expires March 1st.
+                  food & drinks throughout the event. Best price available — expires March 1st.
                 </p>
               </div>
               <div className="pt-4 border-t border-white/10 flex items-center justify-between gap-4">
@@ -102,12 +103,12 @@ export const TicketsPage: React.FC = () => {
                 <span className="mt-3 inline-flex items-center rounded-full bg-purple-400/15 text-purple-100 border border-purple-300/40 px-3 py-1 text-xs font-semibold tracking-wider uppercase">
                   Limited spots available
                 </span>
-                <h3 className="mt-3 text-2xl font-semibold text-white">Early Bird VIP -- The Curator&apos;s Experience</h3>
+                <h3 className="mt-3 text-2xl font-semibold text-white">Early Bird VIP — The Curator&apos;s Experience</h3>
               </div>
               <div className="py-6 flex-1">
                 <p className="text-purple-100/90">
                   Premium experience with priority seating in first three rows, exclusive pre-event reception with
-                  speakers, private lounge access, priority Q&A, and unlimited F&B. Limited spots -- expires March 1st.
+                  speakers, private lounge access, priority Q&A, and unlimited F&B. Limited spots — expires March 1st.
                 </p>
               </div>
               <div className="pt-4 border-t border-white/10 flex items-center justify-between gap-4">
@@ -134,7 +135,7 @@ export const TicketsPage: React.FC = () => {
                 <span className="mt-3 inline-flex items-center rounded-full bg-purple-400/15 text-purple-100 border border-purple-300/40 px-3 py-1 text-xs font-semibold tracking-wider uppercase">
                   Limited spots available
                 </span>
-                <h3 className="mt-3 text-2xl font-semibold text-white">Upgrade to VIP -- The Curator&apos;s Experience</h3>
+                <h3 className="mt-3 text-2xl font-semibold text-white">Upgrade to VIP — The Curator&apos;s Experience</h3>
               </div>
               <div className="py-6 flex-1">
                 <p className="text-purple-100/90">
@@ -185,7 +186,7 @@ export const TicketsPage: React.FC = () => {
               transition={{ duration: 0.2 }}
             />
             <motion.div
-              className="relative z-10 w-full max-w-md rounded-2xl border border-white/15 bg-[#1f1430] shadow-2xl shadow-purple-900/60 p-8 text-white text-center"
+              className="relative z-10 w-full max-w-md rounded-2xl border border-white/15 bg-[#1f1430] shadow-2xl shadow-purple-900/60 p-8 text-white"
               initial={{ opacity: 0, y: 12, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 8, scale: 0.98 }}
@@ -193,19 +194,31 @@ export const TicketsPage: React.FC = () => {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-start justify-between gap-4">
-                <div className="text-left">
+                <div className="pl-1">
                   <h4 className="mt-2 text-2xl font-semibold tracking-wide">Upgrade Requirement</h4>
                 </div>
                 <button
                   type="button"
                   onClick={() => setShowUpgradeNote(false)}
-                  className="text-white/70 hover:text-white transition-colors text-base"
+                  className="text-white/70 hover:text-white transition-colors p-2 -m-2 rounded-full hover:bg-white/10"
                   aria-label="Close"
                 >
-                  X
+                  <svg
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                    className="h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
                 </button>
               </div>
-              <p className="mt-6 text-lg leading-relaxed text-purple-100/90">
+              <p className="mt-6 text-lg leading-relaxed text-purple-100/90 pl-1">
                 Requires existing General Admission ticket
               </p>
             </motion.div>
