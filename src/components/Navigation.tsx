@@ -72,7 +72,7 @@ export const Navigation: React.FC = () => {
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="btn-primary"
+              className="btn-primary text-[11px] px-3 py-1.5 md:text-sm md:px-6 md:py-3"
             >
               BUY TICKETS
             </motion.button>
