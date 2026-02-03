@@ -1,15 +1,15 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { BrainVisualization } from '@/components/BrainVisualization';
 import { FloatingTriangles } from '@/components/FloatingTriangles';
 import { fadeInUp, staggerContainer } from '@/lib/animations';
 
 export const HeroSection: React.FC = () => {
+  const navigate = useNavigate();
+
   const handleBuyTickets = () => {
-    const ctaSection = document.getElementById('cta');
-    if (ctaSection) {
-      ctaSection.scrollIntoView({ behavior: 'smooth' });
-    }
+    navigate('/tickets');
   };
 
   return (

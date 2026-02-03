@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FloatingTriangles } from '@/components/FloatingTriangles';
 import { useInView } from '@/hooks/useInView';
@@ -6,10 +7,10 @@ import { fadeInUp, staggerContainer } from '@/lib/animations';
 
 export const CTASection: React.FC = () => {
   const { ref, isInView } = useInView<HTMLElement>({ threshold: 0.3 });
+  const navigate = useNavigate();
 
   const handleBuyTickets = () => {
-    // In a real app, this would open a ticket purchase modal or redirect
-    alert('Ticket purchase coming soon!');
+    navigate('/tickets');
   };
 
   return (

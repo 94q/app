@@ -1,25 +1,38 @@
 import React from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useScrollPosition } from '@/hooks/useScrollPosition';
 
-interface NavigationProps {
-  onNavigate?: (section: string) => void;
-}
-
-export const Navigation: React.FC<NavigationProps> = ({ onNavigate }) => {
+export const Navigation: React.FC = () => {
   const { isScrolled } = useScrollPosition();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isHomePage = location.pathname === '/';
 
   const navLinks = [
-    { label: 'HOME', section: 'home' },
-    { label: 'SPEAKERS', section: 'speakers' },
-    { label: 'TEAM', section: 'team' },
+    { label: 'HOME', href: '/', section: 'home' },
+    { label: 'SPEAKERS', href: '/#speakers', section: 'speakers' },
+    { label: 'TEAM', href: '/#team', section: 'team' },
   ];
 
-  const handleClick = (section: string) => {
-    onNavigate?.(section);
-    const element = document.getElementById(section);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, section: string, href: string) => {
+    if (isHomePage && section !== 'home') {
+      // On home page, scroll to section
+      e.preventDefault();
+      const element = document.getElementById(section);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else if (!isHomePage && href.startsWith('/#')) {
+      // On other pages, navigate to home then scroll
+      e.preventDefault();
+      navigate('/');
+      setTimeout(() => {
+        const element = document.getElementById(section);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
     }
   };
 
@@ -41,27 +54,29 @@ export const Navigation: React.FC<NavigationProps> = ({ onNavigate }) => {
         {/* Navigation Links */}
         <div className="flex items-center gap-8">
           {navLinks.map((link) => (
-            <button
+            <Link
               key={link.section}
-              onClick={() => handleClick(link.section)}
+              to={link.href}
+              onClick={(e) => handleNavClick(e, link.section, link.href)}
               className="text-white/80 hover:text-white text-sm font-medium tracking-wider transition-colors duration-300 relative group"
             >
               {link.label}
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent-purple transition-all duration-300 group-hover:w-full" />
-            </button>
+            </Link>
           ))}
         </div>
 
         {/* CTA Button */}
         <div className="flex-1 flex justify-end">
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => handleClick('cta')}
-            className="btn-primary"
-          >
-            BUY TICKETS
-          </motion.button>
+          <Link to="/tickets">
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="btn-primary"
+            >
+              BUY TICKETS
+            </motion.button>
+          </Link>
         </div>
       </nav>
     </motion.header>
