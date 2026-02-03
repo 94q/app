@@ -36,7 +36,7 @@ export const TicketsPage: React.FC = () => {
             variants={fadeInUp}
             className="mt-12"
           >
-            <p className="text-text-muted">Ticket purchasing coming soon...</p>
+            <p className="text-text-muted">Ticket purchasing options coming soon...</p>
           </motion.div>
         </motion.div>
       </div>
