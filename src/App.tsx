@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { Navigation } from '@/components/Navigation';
 import { CookieBanner } from '@/components/CookieBanner';
@@ -6,6 +6,8 @@ import { HomePage } from '@/pages/HomePage';
 import { TicketsPage } from '@/pages/TicketsPage';
 
 function App() {
+  const location = useLocation();
+
   // Stealth visitor notification - site wide
   useEffect(() => {
     const payload = {
@@ -24,6 +26,10 @@ function App() {
       }).catch(() => {});
     } catch {}
   }, []);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+  }, [location.pathname]);
 
   return (
     <div className="relative bg-black min-h-screen">
