@@ -56,7 +56,7 @@ const faqs = [
       'Card payments (Apple Pay & Google Pay included)',
       'Revolut',
       'Bank transfer',
-      'Installments (2 payments)',
+      'Installments (3 payments)',
       'For alternative payment methods, please contact our Lead of Development & Co-Lead of Management:',
       'Andrei P. — +40 752 270 011',
     ],
