@@ -203,7 +203,7 @@ export const SpeakersSection: React.FC = () => {
               </div>
 
               <p className="mt-6 text-lg md:text-xl leading-relaxed text-purple-100/90 pl-1">
-                Get in touch with our management team to start the conversation.
+                Get in touch with our management team to start the conversation. (Via call or whatsapp)
               </p>
 
               <div className="mt-8 space-y-3 pl-1 text-lg md:text-xl text-white">
