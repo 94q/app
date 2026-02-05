@@ -61,7 +61,7 @@ export const HeroSection: React.FC = () => {
               A stage for ideas that matter. Thought leaders, innovators, and young
               visionaries come together to share stories, experiences, and insights
               that inspire action. Each talk explores how a single idea can grow into
-              meaningful change, encouraging everyone to imagine, create, and shape the
+              meaningful change, encouraging everyone to imagine, create and shape the
               future.
             </motion.p>
 

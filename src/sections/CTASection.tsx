@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { Instagram } from 'lucide-react';
 import { FloatingTriangles } from '@/components/FloatingTriangles';
 import { useInView } from '@/hooks/useInView';
 import { fadeInUp, staggerContainer } from '@/lib/animations';
@@ -88,6 +89,35 @@ export const CTASection: React.FC = () => {
             </motion.button>
           </motion.div>
         </motion.div>
+      </div>
+
+      {/* Social Icons */}
+      <div className="absolute right-6 bottom-6 z-20 flex items-center gap-3">
+        <a
+          href="https://www.instagram.com/tedx.ichbcolentina/"
+          target="_blank"
+          rel="noreferrer"
+          className="text-white/70 hover:text-white transition-colors p-2 rounded-full hover:bg-white/10"
+          aria-label="Instagram"
+        >
+          <Instagram className="h-6 w-6 md:h-5 md:w-5" />
+        </a>
+        <a
+          href="https://tiktok.com/@tedx.ichbcolentina25"
+          target="_blank"
+          rel="noreferrer"
+          className="text-white/70 hover:text-white transition-colors p-2 rounded-full hover:bg-white/10"
+          aria-label="TikTok"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            className="h-6 w-6 md:h-5 md:w-5"
+            fill="currentColor"
+          >
+            <path d="M14.5 3c.4 2.2 2 4 4.2 4.3v2.3c-1.5 0-2.9-.5-4.2-1.4v6.1c0 3-2.5 5.5-5.5 5.5S3.5 17.3 3.5 14.3s2.5-5.5 5.5-5.5c.5 0 1 .1 1.5.2v2.5c-.4-.2-.9-.3-1.5-.3-1.7 0-3 1.4-3 3s1.3 3 3 3 3-1.3 3-3V3h3z" />
+          </svg>
+        </a>
       </div>
     </section>
   );

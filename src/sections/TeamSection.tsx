@@ -13,7 +13,7 @@ interface TeamMember {
 const teamMembers: TeamMember[] = [
   { name: 'Amr A.', role: 'Lead Management', shapeColor: 'bg-yellow-400' },
   { name: 'Maya H.', role: 'Co-Lead Management', shapeColor: 'bg-teal-400' },
-  { name: 'Andrei P.', role: 'Lead of Development', shapeColor: 'bg-purple-400' },
+  { name: 'Andrei P.', role: 'Lead of Development & Co-Lead Management', shapeColor: 'bg-purple-400' },
 ];
 
 const TriangleShape: React.FC<{ color: string; className?: string }> = ({

@@ -1,9 +1,10 @@
 import { Routes, Route, useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useLayoutEffect } from 'react';
 import { Navigation } from '@/components/Navigation';
 import { CookieBanner } from '@/components/CookieBanner';
 import { HomePage } from '@/pages/HomePage';
 import { TicketsPage } from '@/pages/TicketsPage';
+import { FAQPage } from '@/pages/FAQPage';
 
 function App() {
   const location = useLocation();
@@ -27,9 +28,10 @@ function App() {
     } catch {}
   }, []);
 
-  useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
-  }, [location.pathname]);
+  // Ensure every route change starts at the top of the page
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.key]);
 
   return (
     <div className="relative bg-black min-h-screen">
@@ -41,6 +43,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/tickets" element={<TicketsPage />} />
+          <Route path="/faq" element={<FAQPage />} />
         </Routes>
       </main>
 

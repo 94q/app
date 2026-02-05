@@ -23,15 +23,6 @@ export const HomePage: React.FC = () => {
         triangleDensity="low"
       />
 
-      {/* Be part of a day... */}
-      <TextSection
-        lines={[
-          "Be part of a day that sparks ideas and inspires action. Get your ticket and join the experience.",
-          "Join the curious minds. Reserve your spot now.",
-        ]}
-        triangleDensity="high"
-      />
-
       {/* TEDx ICHB Colentina Youth */}
       <TextSection
         lines={[

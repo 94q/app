@@ -13,10 +13,11 @@ export const Navigation: React.FC = () => {
     { label: 'HOME', href: '/', section: 'home' },
     { label: 'SPEAKERS', href: '/#speakers', section: 'speakers' },
     { label: 'TEAM', href: '/#team', section: 'team' },
+    { label: 'FAQ', href: '/faq', section: 'faq' },
   ];
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, section: string, href: string) => {
-    if (isHomePage && section !== 'home') {
+    if (isHomePage && section !== 'home' && href.startsWith('/#')) {
       // On home page, scroll to section
       e.preventDefault();
       const element = document.getElementById(section);
