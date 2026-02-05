@@ -52,7 +52,9 @@ function App() {
 
       {/* Footer Copyright */}
       <footer className="absolute bottom-4 left-6 z-10 text-xs text-white/60">
-        © 2026 Andrei P. TEDx ICHB Colentina Youth. All rights reserved.
+        © 2026 Andrei P. TEDx ICHB Colentina Youth.
+        <br />
+        All rights reserved.
       </footer>
     </div>
   );
