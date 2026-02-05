@@ -208,7 +208,7 @@ export const SpeakersSection: React.FC = () => {
 
               <div className="mt-8 space-y-3 pl-1 text-lg md:text-xl text-white">
                 <p>Amr A. — +40 731 825 888</p>
-                <p>Andrei P. — +40 752 270 01</p>
+                <p>Andrei P. — +40 752 270 011</p>
               </div>
             </motion.div>
           </div>
