@@ -5,6 +5,8 @@ import { CookieBanner } from '@/components/CookieBanner';
 import { HomePage } from '@/pages/HomePage';
 import { TicketsPage } from '@/pages/TicketsPage';
 import { FAQPage } from '@/pages/FAQPage';
+import { BecomeSpeakerPage } from '@/pages/BecomeSpeakerPage';
+import { BecomeSponsorPage } from '@/pages/BecomeSponsorPage';
 
 function App() {
   const location = useLocation();
@@ -44,6 +46,8 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/tickets" element={<TicketsPage />} />
           <Route path="/faq" element={<FAQPage />} />
+          <Route path="/become-a-speaker" element={<BecomeSpeakerPage />} />
+          <Route path="/become-a-sponsor" element={<BecomeSponsorPage />} />
         </Routes>
       </main>
 

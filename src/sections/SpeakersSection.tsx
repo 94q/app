@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Instagram } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { FloatingTriangles } from '@/components/FloatingTriangles';
 import { useInView } from '@/hooks/useInView';
 import { fadeInUp } from '@/lib/animations';
@@ -9,10 +10,27 @@ interface Speaker {
   id: number;
   name: string;
   isLocked: boolean;
+  image?: string;
+  bio?: string[];
 }
 
 const speakers: Speaker[] = [
-  { id: 1, name: '???', isLocked: true },
+  {
+    id: 1,
+    name: 'Raphael Radut',
+    isLocked: false,
+    image: '/assets/radut.jpg',
+    bio: [
+      'Founder of educational platform Raphael Academy',
+      'aieseu.ro (First Romanian Student Friendly AI platform)',
+      'CEO and Founder of agentvocal.ro - AI romanian Start-up',
+      'Co founder of vocalagent.eu (Netherlands AI startup)',
+      'CEO of vocalagent.bg (Bulgarian AI Startup)',
+      'Founder agentvocal.md (Moldovian Startup)',
+      'Co founder of CallFix AI (Moldovian AI Start-up)',
+      'Founder of Elyon AI Automations SRL (AI Research Company Romania)',
+    ],
+  },
   { id: 2, name: '???', isLocked: true },
   { id: 3, name: '???', isLocked: true },
   { id: 4, name: '???', isLocked: true },
@@ -21,7 +39,7 @@ const speakers: Speaker[] = [
 
 export const SpeakersSection: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [showSpeakerModal, setShowSpeakerModal] = useState(false);
+  const [activeSpeaker, setActiveSpeaker] = useState<Speaker | null>(null);
   const { ref, isInView } = useInView<HTMLElement>({ threshold: 0.2 });
 
   const handlePrev = () => {
@@ -84,25 +102,50 @@ export const SpeakersSection: React.FC = () => {
                   className="absolute"
                 >
                   <div className="relative w-48 md:w-64 h-72 md:h-96 rounded-2xl overflow-hidden bg-gradient-to-b from-purple-900/30 to-black border border-white/10">
-                    {/* Silhouette Background */}
-                    <img
-                      src="/assets/speaker-silhouette.png"
-                      alt="Mystery Speaker"
-                      className="absolute inset-0 w-full h-full object-cover opacity-60"
-                    />
+                    {speaker.isLocked ? (
+                      <>
+                        {/* Silhouette Background */}
+                        <img
+                          src="/assets/speaker-silhouette.png"
+                          alt="Mystery Speaker"
+                          className="absolute inset-0 w-full h-full object-cover opacity-60"
+                        />
 
-                    {/* Lock Overlay */}
-                    <div className="absolute inset-0 flex flex-col items-center justify-center">
-                      <img
-                        src="/assets/lock-icon.png"
-                        alt="Locked"
-                        className="w-20 h-20 md:w-28 md:h-28 object-contain drop-shadow-2xl"
-                      />
-                      <p className="mt-4 text-2xl md:text-3xl font-bold text-white">
-                        {speaker.name}
-                      </p>
-                      <p className="text-text-secondary text-sm">???</p>
-                    </div>
+                        {/* Lock Overlay */}
+                        <div className="absolute inset-0 flex flex-col items-center justify-center">
+                          <img
+                            src="/assets/lock-icon.png"
+                            alt="Locked"
+                            className="w-20 h-20 md:w-28 md:h-28 object-contain drop-shadow-2xl"
+                          />
+                          <p className="mt-4 text-2xl md:text-3xl font-bold text-white">
+                            {speaker.name}
+                          </p>
+                          <p className="text-text-secondary text-sm">???</p>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <img
+                          src={speaker.image || '/assets/speaker-silhouette.png'}
+                          alt={speaker.name}
+                          className="absolute inset-0 h-full w-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                        <div className="absolute inset-x-0 bottom-0 p-4 text-center">
+                          <p className="text-xl md:text-2xl font-semibold text-white">
+                            {speaker.name}
+                          </p>
+                          <button
+                            type="button"
+                            onClick={() => setActiveSpeaker(speaker)}
+                            className="mt-3 inline-flex items-center justify-center rounded-full border border-white/20 bg-black/60 px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-white transition hover:border-purple-300/70 hover:text-white"
+                          >
+                            Show biography
+                          </button>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </motion.div>
               ))}
@@ -130,28 +173,33 @@ export const SpeakersSection: React.FC = () => {
           </motion.button>
         </div>
 
-        <div className="mt-10 flex justify-center">
-          <button
-            type="button"
-            onClick={() => setShowSpeakerModal(true)}
+        <div className="mt-10 flex flex-col items-center gap-4">
+          <Link
+            to="/become-a-speaker"
             className="btn-primary shadow-lg shadow-purple-500/60 hover:shadow-purple-400/80 hover:scale-105 transition-transform ring-1 ring-purple-300/40 hover:ring-purple-200/80"
           >
             Become a speaker
-          </button>
+          </Link>
+          <Link
+            to="/become-a-sponsor"
+            className="btn-primary shadow-lg shadow-purple-500/60 hover:shadow-purple-400/80 hover:scale-105 transition-transform ring-1 ring-purple-300/40 hover:ring-purple-200/80"
+          >
+            Become a sponsor
+          </Link>
         </div>
       </div>
 
       <AnimatePresence>
-        {showSpeakerModal && (
+        {activeSpeaker && (
           <div className="fixed inset-0 z-50 flex items-center justify-center px-6">
             <motion.div
               className="absolute inset-0 bg-black"
-              onClick={() => setShowSpeakerModal(false)}
+              onClick={() => setActiveSpeaker(null)}
               role="button"
-              aria-label="Close speaker inquiry"
+              aria-label="Close biography"
               tabIndex={0}
               initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              animate={{ opacity: 0.8 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
             />
@@ -166,52 +214,38 @@ export const SpeakersSection: React.FC = () => {
               <div className="flex items-start justify-between gap-4">
                 <div className="pl-1">
                   <h4 className="text-3xl md:text-4xl font-semibold tracking-wide">
-                    Interested in becoming a TEDx speaker?
+                    {activeSpeaker.name}
                   </h4>
                 </div>
-                <div className="flex items-center gap-3">
-                  <a
-                    href="https://www.instagram.com/tedx.ichbcolentina/"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-white/70 hover:text-white transition-colors p-2 -m-2 rounded-full hover:bg-white/10"
-                    aria-label="Instagram"
+                <button
+                  type="button"
+                  onClick={() => setActiveSpeaker(null)}
+                  className="text-white/70 hover:text-white transition-colors p-2 -m-2 rounded-full hover:bg-white/10"
+                  aria-label="Close"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                    className="h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   >
-                    <Instagram className="h-5 w-5" />
-                  </a>
-                  <button
-                    type="button"
-                    onClick={() => setShowSpeakerModal(false)}
-                    className="text-white/70 hover:text-white transition-colors p-2 -m-2 rounded-full hover:bg-white/10"
-                    aria-label="Close"
-                  >
-                    <svg
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                      className="h-4 w-4"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <line x1="18" y1="6" x2="6" y2="18" />
-                      <line x1="6" y1="6" x2="18" y2="18" />
-                    </svg>
-                  </button>
-                </div>
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </button>
               </div>
 
-              <p className="mt-6 text-lg md:text-xl leading-relaxed text-purple-100/90 pl-1">
-                Get in touch with our management team to start the conversation. (Via Call or Whatsapp)
-              </p>
-
-              <div className="mt-8 space-y-3 pl-1 text-lg md:text-xl text-white">
-                <p>Amr A. - +40 731 825 888</p>
-                <p>Andrei P. - +40 752 270 011</p>
-                <p>Maya H. - +40 775 580 671</p>
-                <p>Ioana V. - +40 722 232 936</p>
-              </div>
+              <ul className="mt-6 space-y-3 text-lg md:text-xl text-purple-100/90 pl-6 list-disc">
+                {activeSpeaker.bio?.map((line) => (
+                  <li key={line} className="leading-relaxed">
+                    {line}
+                  </li>
+                ))}
+              </ul>
             </motion.div>
           </div>
         )}
