@@ -191,7 +191,7 @@ export const SpeakersSection: React.FC = () => {
 
       <AnimatePresence>
         {activeSpeaker && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center px-6">
+          <div className="fixed inset-0 z-50 flex items-center justify-center px-4 sm:px-6">
             <motion.div
               className="absolute inset-0 bg-black"
               onClick={() => setActiveSpeaker(null)}
@@ -204,7 +204,7 @@ export const SpeakersSection: React.FC = () => {
               transition={{ duration: 0.2 }}
             />
             <motion.div
-              className="relative z-10 w-full max-w-2xl rounded-3xl border border-white/15 bg-[#1f1430] shadow-2xl shadow-purple-900/70 p-10 text-white"
+              className="relative z-10 w-full max-w-lg sm:max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl border border-white/15 bg-[#1f1430] shadow-2xl shadow-purple-900/70 p-6 sm:p-10 text-white"
               initial={{ opacity: 0, y: 12, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 8, scale: 0.98 }}
