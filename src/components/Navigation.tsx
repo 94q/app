@@ -53,7 +53,7 @@ export const Navigation: React.FC = () => {
         <div className="flex-1" />
 
         {/* Navigation Links */}
-        <div className="flex items-center gap-4 sm:gap-8">
+        <div className="flex items-center gap-4 sm:gap-8 mr-3 sm:mr-0">
           {navLinks.map((link) => (
             <Link
               key={link.section}
