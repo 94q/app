@@ -31,10 +31,23 @@ const speakers: Speaker[] = [
       'Founder of Elyon AI Automations SRL (AI Research Company Romania)',
     ],
   },
-  { id: 2, name: '???', isLocked: true },
+  {
+    id: 2,
+    name: 'Ion Metiu',
+    isLocked: false,
+    image: '/assets/ion.jpeg',
+    bio: [
+      '"Hacking your mindset. Designing your future."',
+      'Ion works at the intersection of Business Consulting and NLP (Neuro-Linguistic Programming). Instead of just looking at numbers, he analyzes the "algorithms" behind human behavior: why we do what we do and how we can change the results we get.',
+      'Certified as a Licensed Trainer of Neuro-Linguistic Programming directly by Dr. Richard Bandler, co-creator of NLP, Ion uses his 25+ years of experience to help leaders and teams break free from the patterns that hold them back. He does not believe in "magic pills," but in clear, practical techniques that can be programmed into daily life.',
+      'At TEDx ICHB Colentina, he is here to show that the future is not something that "happens to you," it is something you architect yourself.',
+      'His message is simple: learn to master your Mind(Set) before someone else does it for you. From the fear of missing out to the courage of building your own path, Ion provides the tools to help every young person switch from "Snooze" mode to Massive Action mode.',
+    ],
+  },
   { id: 3, name: '???', isLocked: true },
   { id: 4, name: '???', isLocked: true },
   { id: 5, name: '???', isLocked: true },
+  { id: 6, name: '???', isLocked: true },
 ];
 
 export const SpeakersSection: React.FC = () => {

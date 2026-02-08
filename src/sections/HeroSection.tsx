@@ -65,6 +65,20 @@ export const HeroSection: React.FC = () => {
               future.
             </motion.p>
 
+            <motion.div
+              variants={fadeInUp}
+              className="mt-6 flex flex-wrap items-center gap-3"
+            >
+              <img
+                src="/assets/ichb.png"
+                alt="ICHB Colentina logo"
+                className="h-14 md:h-16 w-auto opacity-90"
+              />
+              <span className="text-sm md:text-base text-white/60">
+                Organised by ICHB Colentina
+              </span>
+            </motion.div>
+
             {/* CTA Button */}
             <motion.div variants={fadeInUp} className="mt-8">
               <motion.button
