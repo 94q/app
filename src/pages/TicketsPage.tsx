@@ -387,21 +387,21 @@ export const TicketsPage: React.FC = () => {
                 </button>
               </div>
 
-              <div className="mt-3 rounded-2xl bg-black/35 p-2 md:p-3 seat-map-surface">
-                <div className="grid grid-cols-[20px_1fr] md:grid-cols-[26px_1fr] items-start gap-2 md:gap-5">
-                  <div className="pt-1.5 md:pt-2.5 space-y-1.5 md:space-y-2.5">
+              <div className="mt-3 rounded-2xl bg-black/35 p-1 md:p-3 seat-map-surface overflow-x-auto overflow-y-hidden">
+                <div className="grid grid-cols-[14px_1fr] md:grid-cols-[26px_1fr] items-start gap-1 md:gap-5">
+                  <div className="pt-1 md:pt-2.5 space-y-1 md:space-y-2.5">
                     {DISPLAY_ROWS.map((row) => (
-                      <div key={`label-${row}`} className="h-5 md:h-6 text-[10px] md:text-xs font-semibold text-white/85 text-center">
+                      <div key={`label-${row}`} className="h-4 md:h-6 text-[9px] md:text-xs font-semibold text-white/85 text-center">
                         {row}
                       </div>
                     ))}
                   </div>
 
-                  <div className="grid grid-cols-3 gap-2 md:gap-0">
+                  <div className="grid grid-cols-[auto_auto_auto] justify-center gap-[2px] md:gap-0">
                     {(['left', 'center', 'right'] as const).map((section) => (
                       <div
                         key={`section-${section}`}
-                        className={`relative rounded-[20px] px-1 md:px-2 py-1.5 md:py-2 origin-bottom ${
+                        className={`relative rounded-[20px] px-0 md:px-2 py-1 md:py-2 origin-bottom ${
                           section === 'left'
                             ? 'md:-rotate-[8deg] md:translate-y-3 md:translate-x-14 lg:translate-x-20'
                             : section === 'right'
@@ -414,9 +414,9 @@ export const TicketsPage: React.FC = () => {
                           style={{ clipPath: 'polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%)' }}
                         />
 
-                        <div className="relative space-y-1.5 md:space-y-2.5">
+                        <div className="relative space-y-1 md:space-y-2.5">
                           {DISPLAY_ROWS.map((row) => (
-                            <div key={`${section}-${row}`} className="h-5 md:h-6 flex items-center justify-center gap-[2px] md:gap-1">
+                            <div key={`${section}-${row}`} className="h-4 md:h-6 flex items-center justify-center gap-[1px] md:gap-1">
                               {Array.from({ length: SECTION_COUNTS[section][row] }).map((_, idx) => {
                                 const number = idx + 1;
                                 const id = seatId(section, row, number);
@@ -428,8 +428,8 @@ export const TicketsPage: React.FC = () => {
                                     type="button"
                                     onClick={() => handleSeatPick(section, row, number)}
                                     disabled={status === 'locked' || status === 'sold' || redirecting}
-                                    className={`relative w-4 h-4 md:w-5 md:h-5 border text-[7px] md:text-[8px] font-semibold transition-transform duration-150 hover:scale-105 disabled:hover:scale-100 ${getSeatClassName(status, vip)} ${vip && status !== 'sold' ? 'vip-seat-premium' : ''}`}
-                                    style={{ borderRadius: '7px 7px 3px 3px' }}
+                                    className={`relative w-[7px] h-[7px] md:w-5 md:h-5 border text-[4px] md:text-[8px] font-semibold leading-none transition-transform duration-150 hover:scale-105 disabled:hover:scale-100 ${getSeatClassName(status, vip)} ${vip && status !== 'sold' ? 'vip-seat-premium' : ''}`}
+                                    style={{ borderRadius: '4px 4px 1.5px 1.5px' }}
                                     title={`${section.toUpperCase()} ${row}-${number}${vip ? ' VIP' : ''}`}
                                   >
                                     <span className="relative z-10">{number}</span>
