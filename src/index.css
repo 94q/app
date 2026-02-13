@@ -215,3 +215,9 @@
   animation: vip-premium-shimmer 1.7s ease-in-out infinite;
   pointer-events: none;
 }
+
+/* Seat map touch support */
+.seat-map-surface {
+  touch-action: pan-x pan-y pinch-zoom;
+  overscroll-behavior: contain;
+}

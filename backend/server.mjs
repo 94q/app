@@ -1,4 +1,4 @@
-﻿import express from 'express';
+import express from 'express';
 import cors from 'cors';
 import Stripe from 'stripe';
 import dotenv from 'dotenv';
@@ -13,7 +13,7 @@ const __dirname = path.dirname(__filename);
 const SOLD_SEATS_PATH = path.join(__dirname, 'data', 'sold-seats.json');
 
 const PORT = Number(process.env.PORT || 8787);
-const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
+const FRONTEND_URL = process.env.FRONTEND_URL || 'https://tedxichbcolentina.xyz';
 
 const PRICE_ID_BY_TIER = {
   ga: process.env.STRIPE_PRICE_GA,
@@ -120,6 +120,12 @@ app.post('/api/checkout-session', async (req, res) => {
         seat_id: seatId,
         ticket_tier: tier,
       },
+      payment_intent_data: {
+        metadata: {
+          seat_id: seatId,
+          ticket_tier: tier,
+        },
+      },
     });
 
     if (!session.url) {
@@ -134,5 +140,5 @@ app.post('/api/checkout-session', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Stripe backend running on http://localhost:${PORT}`);
+  console.log(`Stripe backend running on port ${PORT}`);
 });

@@ -387,7 +387,7 @@ export const TicketsPage: React.FC = () => {
                 </button>
               </div>
 
-              <div className="mt-3 rounded-2xl bg-black/35 p-2 md:p-3">
+              <div className="mt-3 rounded-2xl bg-black/35 p-2 md:p-3 seat-map-surface">
                 <div className="grid grid-cols-[20px_1fr] md:grid-cols-[26px_1fr] items-start gap-2 md:gap-5">
                   <div className="pt-1.5 md:pt-2.5 space-y-1.5 md:space-y-2.5">
                     {DISPLAY_ROWS.map((row) => (
@@ -397,15 +397,15 @@ export const TicketsPage: React.FC = () => {
                     ))}
                   </div>
 
-                  <div className="grid grid-cols-3 gap-0 md:gap-1">
+                  <div className="grid grid-cols-3 gap-2 md:gap-0">
                     {(['left', 'center', 'right'] as const).map((section) => (
                       <div
                         key={`section-${section}`}
                         className={`relative rounded-[20px] px-1 md:px-2 py-1.5 md:py-2 origin-bottom ${
                           section === 'left'
-                            ? '-rotate-[8deg] translate-y-2 md:translate-y-3 translate-x-10 md:translate-x-20'
+                            ? 'md:-rotate-[8deg] md:translate-y-3 md:translate-x-14 lg:translate-x-20'
                             : section === 'right'
-                              ? 'rotate-[8deg] translate-y-2 md:translate-y-3 -translate-x-10 md:-translate-x-20'
+                              ? 'md:rotate-[8deg] md:translate-y-3 md:-translate-x-14 lg:-translate-x-20'
                               : ''
                         }`}
                       >
@@ -578,6 +578,7 @@ export const TicketsPage: React.FC = () => {
 };
 
 export default TicketsPage;
+
 
 
 
