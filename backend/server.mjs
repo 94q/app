@@ -10,7 +10,8 @@ dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const SOLD_SEATS_PATH = path.join(__dirname, 'data', 'sold-seats.json');
+const DEFAULT_SOLD_SEATS_PATH = path.join(__dirname, 'data', 'sold-seats.json');
+const SOLD_SEATS_PATH = process.env.SOLD_SEATS_PATH || DEFAULT_SOLD_SEATS_PATH;
 
 const PORT = Number(process.env.PORT || 8787);
 const FRONTEND_URL = process.env.FRONTEND_URL || 'https://tedxichbcoletina.xyz';
@@ -29,6 +30,14 @@ const ENV_ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || '')
   .filter(Boolean);
 
 const ALLOWED_ORIGINS = [...new Set([...DEFAULT_ALLOWED_ORIGINS, ...ENV_ALLOWED_ORIGINS])];
+const SOLD_SEAT_REGEX = /^(left|center|right)-[A-H]-\d{1,2}$/;
+
+const stripeCacheSecondsRaw = Number(process.env.SOLD_SEATS_STRIPE_CACHE_SECONDS || 45);
+const SOLD_SEATS_STRIPE_CACHE_MS =
+  Number.isFinite(stripeCacheSecondsRaw) && stripeCacheSecondsRaw > 0 ? stripeCacheSecondsRaw * 1000 : 45_000;
+const stripeMaxPagesRaw = Number(process.env.SOLD_SEATS_STRIPE_MAX_PAGES || 20);
+const SOLD_SEATS_STRIPE_MAX_PAGES =
+  Number.isFinite(stripeMaxPagesRaw) && stripeMaxPagesRaw > 0 ? Math.floor(stripeMaxPagesRaw) : 20;
 
 const PRICE_ID_BY_TIER = {
   ga: process.env.STRIPE_PRICE_GA,
@@ -40,19 +49,121 @@ const stripe = process.env.STRIPE_SECRET_KEY
   ? new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2025-01-27.acacia' })
   : null;
 
+const MANUAL_SOLD_SEATS = (process.env.MANUAL_SOLD_SEATS || '')
+  .split(',')
+  .map((seat) => normalizeSeatId(seat))
+  .filter((seat) => SOLD_SEAT_REGEX.test(seat));
+
+let stripeSoldSeatsCache = {
+  seats: [],
+  expiresAt: 0,
+  inFlight: null,
+};
+
+function normalizeSeatId(value) {
+  if (typeof value !== 'string') return '';
+
+  const trimmed = value.trim();
+  if (!trimmed) return '';
+
+  const [section, row, number] = trimmed.split('-');
+  if (!section || !row || !number) return trimmed.toLowerCase();
+
+  return `${section.toLowerCase()}-${row.toUpperCase()}-${number}`;
+}
+
+function dedupeAndSortSeats(seats) {
+  return [...new Set(seats.map((seat) => normalizeSeatId(seat)).filter((seat) => SOLD_SEAT_REGEX.test(seat)))].sort();
+}
+
 async function readSoldSeats() {
   try {
     const raw = await fs.readFile(SOLD_SEATS_PATH, 'utf8');
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
+    return Array.isArray(parsed) ? dedupeAndSortSeats(parsed) : [];
   } catch {
     return [];
   }
 }
 
 async function writeSoldSeats(seats) {
-  const unique = [...new Set(seats)].sort();
+  const unique = dedupeAndSortSeats(seats);
+  await fs.mkdir(path.dirname(SOLD_SEATS_PATH), { recursive: true });
   await fs.writeFile(SOLD_SEATS_PATH, JSON.stringify(unique, null, 2), 'utf8');
+}
+
+async function fetchStripeSoldSeats() {
+  if (!stripe) return [];
+
+  const stripeSoldSeats = [];
+  let hasMore = true;
+  let startingAfter;
+  let pageCount = 0;
+
+  while (hasMore && pageCount < SOLD_SEATS_STRIPE_MAX_PAGES) {
+    const page = await stripe.paymentIntents.list({
+      limit: 100,
+      ...(startingAfter ? { starting_after: startingAfter } : {}),
+    });
+
+    pageCount += 1;
+
+    for (const paymentIntent of page.data) {
+      if (paymentIntent.status !== 'succeeded') continue;
+
+      const seatId = normalizeSeatId(paymentIntent.metadata?.seat_id);
+      if (SOLD_SEAT_REGEX.test(seatId)) {
+        stripeSoldSeats.push(seatId);
+      }
+    }
+
+    hasMore = page.has_more;
+    startingAfter = page.data.length > 0 ? page.data[page.data.length - 1].id : undefined;
+    if (!startingAfter) break;
+  }
+
+  return dedupeAndSortSeats(stripeSoldSeats);
+}
+
+async function getStripeSoldSeatsCached(forceRefresh = false) {
+  if (!stripe) return [];
+
+  const now = Date.now();
+  if (!forceRefresh && stripeSoldSeatsCache.expiresAt > now) {
+    return stripeSoldSeatsCache.seats;
+  }
+
+  if (stripeSoldSeatsCache.inFlight) {
+    return stripeSoldSeatsCache.inFlight;
+  }
+
+  stripeSoldSeatsCache.inFlight = (async () => {
+    try {
+      const seats = await fetchStripeSoldSeats();
+      stripeSoldSeatsCache = {
+        seats,
+        expiresAt: Date.now() + SOLD_SEATS_STRIPE_CACHE_MS,
+        inFlight: null,
+      };
+      return seats;
+    } catch (error) {
+      console.error('[stripe] Could not sync sold seats from Stripe:', error);
+      const fallbackSeats = stripeSoldSeatsCache.seats;
+      stripeSoldSeatsCache = {
+        seats: fallbackSeats,
+        expiresAt: Date.now() + 10_000,
+        inFlight: null,
+      };
+      return fallbackSeats;
+    }
+  })();
+
+  return stripeSoldSeatsCache.inFlight;
+}
+
+async function getAllSoldSeats() {
+  const [fileSeats, stripeSeats] = await Promise.all([readSoldSeats(), getStripeSoldSeatsCached()]);
+  return dedupeAndSortSeats([...fileSeats, ...stripeSeats, ...MANUAL_SOLD_SEATS]);
 }
 
 const app = express();
@@ -73,14 +184,20 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async
 
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object;
-      const seatId = session.metadata?.seat_id || session.client_reference_id;
+      const seatId = normalizeSeatId(session.metadata?.seat_id || session.client_reference_id);
 
-      if (seatId) {
+      if (SOLD_SEAT_REGEX.test(seatId)) {
         const soldSeats = await readSoldSeats();
         if (!soldSeats.includes(seatId)) {
           soldSeats.push(seatId);
           await writeSoldSeats(soldSeats);
         }
+
+        stripeSoldSeatsCache = {
+          seats: dedupeAndSortSeats([...stripeSoldSeatsCache.seats, seatId]),
+          expiresAt: Date.now() + SOLD_SEATS_STRIPE_CACHE_MS,
+          inFlight: null,
+        };
       }
     }
 
@@ -105,7 +222,7 @@ app.use(
 app.use(express.json());
 
 app.get('/api/seats/sold', async (_req, res) => {
-  const seats = await readSoldSeats();
+  const seats = await getAllSoldSeats();
   res.json({ seats });
 });
 
@@ -121,12 +238,13 @@ app.post('/api/checkout-session', async (req, res) => {
       return res.status(400).json({ error: 'Invalid ticket tier.' });
     }
 
-    if (typeof seatId !== 'string' || !/^(left|center|right)-[A-H]-\d{1,2}$/.test(seatId)) {
+    const normalizedSeatId = normalizeSeatId(seatId);
+    if (!SOLD_SEAT_REGEX.test(normalizedSeatId)) {
       return res.status(400).json({ error: 'Invalid seat id.' });
     }
 
-    const soldSeats = await readSoldSeats();
-    if (soldSeats.includes(seatId)) {
+    const soldSeats = await getAllSoldSeats();
+    if (soldSeats.includes(normalizedSeatId)) {
       return res.status(409).json({ error: 'Seat already sold.' });
     }
 
@@ -152,14 +270,14 @@ app.post('/api/checkout-session', async (req, res) => {
       line_items: [{ price: priceId, quantity: 1 }],
       success_url: `${returnOrigin}/tickets?payment=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${returnOrigin}/tickets?payment=canceled`,
-      client_reference_id: seatId,
+      client_reference_id: normalizedSeatId,
       metadata: {
-        seat_id: seatId,
+        seat_id: normalizedSeatId,
         ticket_tier: tier,
       },
       payment_intent_data: {
         metadata: {
-          seat_id: seatId,
+          seat_id: normalizedSeatId,
           ticket_tier: tier,
         },
       },
@@ -179,4 +297,5 @@ app.post('/api/checkout-session', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Stripe backend running on port ${PORT}`);
   console.log(`Allowed CORS origins: ${ALLOWED_ORIGINS.join(', ')}`);
+  console.log(`Sold seats file path: ${SOLD_SEATS_PATH}`);
 });
