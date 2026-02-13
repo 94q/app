@@ -13,7 +13,22 @@ const __dirname = path.dirname(__filename);
 const SOLD_SEATS_PATH = path.join(__dirname, 'data', 'sold-seats.json');
 
 const PORT = Number(process.env.PORT || 8787);
-const FRONTEND_URL = process.env.FRONTEND_URL || 'https://tedxichbcolentina.xyz';
+const FRONTEND_URL = process.env.FRONTEND_URL || 'https://tedxichbcoletina.xyz';
+
+const DEFAULT_ALLOWED_ORIGINS = [
+  FRONTEND_URL,
+  'https://tedxichbcoletina.xyz',
+  'https://www.tedxichbcoletina.xyz',
+  'https://tedxichbcolentina.xyz',
+  'https://www.tedxichbcolentina.xyz',
+];
+
+const ENV_ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || '')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+const ALLOWED_ORIGINS = [...new Set([...DEFAULT_ALLOWED_ORIGINS, ...ENV_ALLOWED_ORIGINS])];
 
 const PRICE_ID_BY_TIER = {
   ga: process.env.STRIPE_PRICE_GA,
@@ -76,7 +91,17 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async
   }
 });
 
-app.use(cors({ origin: [FRONTEND_URL], credentials: false }));
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (!origin) return callback(null, true);
+      if (ALLOWED_ORIGINS.includes(origin)) return callback(null, true);
+      console.warn(`[cors] Blocked origin: ${origin}`);
+      return callback(null, false);
+    },
+    credentials: false,
+  })
+);
 app.use(express.json());
 
 app.get('/api/seats/sold', async (_req, res) => {
@@ -110,11 +135,14 @@ app.post('/api/checkout-session', async (req, res) => {
       return res.status(500).json({ error: `Missing Stripe price id for tier "${tier}".` });
     }
 
+    const requestOrigin = typeof req.headers.origin === 'string' ? req.headers.origin : '';
+    const returnOrigin = ALLOWED_ORIGINS.includes(requestOrigin) ? requestOrigin : FRONTEND_URL;
+
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `${FRONTEND_URL}/tickets?payment=success&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${FRONTEND_URL}/tickets?payment=canceled`,
+      success_url: `${returnOrigin}/tickets?payment=success&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${returnOrigin}/tickets?payment=canceled`,
       client_reference_id: seatId,
       metadata: {
         seat_id: seatId,
@@ -141,4 +169,5 @@ app.post('/api/checkout-session', async (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Stripe backend running on port ${PORT}`);
+  console.log(`Allowed CORS origins: ${ALLOWED_ORIGINS.join(', ')}`);
 });
