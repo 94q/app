@@ -140,6 +140,15 @@ app.post('/api/checkout-session', async (req, res) => {
 
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
+      customer_creation: 'always',
+      name_collection: {
+        individual: {
+          enabled: true,
+        },
+      },
+      phone_number_collection: {
+        enabled: true,
+      },
       line_items: [{ price: priceId, quantity: 1 }],
       success_url: `${returnOrigin}/tickets?payment=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${returnOrigin}/tickets?payment=canceled`,
