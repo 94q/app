@@ -397,7 +397,7 @@ export const TicketsPage: React.FC = () => {
                     ))}
                   </div>
 
-                  <div className="grid grid-cols-[auto_auto_auto] justify-center gap-[2px] md:gap-0">
+                  <div className="grid grid-cols-[auto_auto_auto] md:grid-cols-3 justify-center md:justify-stretch gap-[2px] md:gap-0">
                     {(['left', 'center', 'right'] as const).map((section) => (
                       <div
                         key={`section-${section}`}
