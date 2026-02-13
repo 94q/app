@@ -101,20 +101,42 @@ export const TicketsPage: React.FC = () => {
   const [soldSeats, setSoldSeats] = useState<Set<string>>(new Set());
   const [checkoutMessage, setCheckoutMessage] = useState<string | null>(null);
 
-  const loadSoldSeats = async () => {
-    try {
-      const response = await fetch(apiUrl('/api/seats/sold'));
-      if (!response.ok) throw new Error('Failed to fetch sold seats.');
-      const data = (await response.json()) as { seats?: string[] };
-      setSoldSeats(new Set(Array.isArray(data.seats) ? data.seats : []));
-    } catch (error) {
-      console.error(error);
-      setCheckoutMessage('Could not load sold seats from server.');
+  const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  const loadSoldSeats = async (options?: { retries?: number; showError?: boolean }): Promise<boolean> => {
+    const retries = options?.retries ?? 3;
+    const showError = options?.showError ?? true;
+
+    for (let attempt = 0; attempt <= retries; attempt += 1) {
+      try {
+        const response = await fetch(apiUrl('/api/seats/sold'), { cache: 'no-store' });
+        if (!response.ok) throw new Error(`Failed to fetch sold seats (${response.status}).`);
+
+        const data = (await response.json()) as { seats?: string[] };
+        setSoldSeats(new Set(Array.isArray(data.seats) ? data.seats : []));
+        if (showError) {
+          setCheckoutMessage((current) => (current === 'Could not load sold seats from server.' ? null : current));
+        }
+        return true;
+      } catch (error) {
+        const lastAttempt = attempt >= retries;
+        if (lastAttempt) {
+          console.error(error);
+          if (showError) {
+            setCheckoutMessage('Could not load sold seats from server.');
+          }
+          return false;
+        }
+
+        await sleep(1200 * (attempt + 1));
+      }
     }
+
+    return false;
   };
 
   useEffect(() => {
-    loadSoldSeats();
+    void loadSoldSeats({ retries: 5, showError: true });
   }, []);
 
   useEffect(() => {
@@ -124,9 +146,15 @@ export const TicketsPage: React.FC = () => {
 
     if (paymentState === 'success') {
       setCheckoutMessage('Payment confirmed. Refreshing sold seats...');
-      loadSoldSeats().then(() => {
-        setCheckoutMessage('Payment confirmed. Seat marked sold.');
-      });
+      void (async () => {
+        const loaded = await loadSoldSeats({ retries: 5, showError: false });
+        if (loaded) {
+          setCheckoutMessage('Payment confirmed. Seat marked sold.');
+          return;
+        }
+
+        setCheckoutMessage('Payment confirmed. Could not refresh sold seats yet. Please reload in a few seconds.');
+      })();
       return;
     }
 
