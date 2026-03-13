@@ -44,10 +44,32 @@ const speakers: Speaker[] = [
       'His message is simple: learn to master your Mind(Set) before someone else does it for you. From the fear of missing out to the courage of building your own path, Ion provides the tools to help every young person switch from "Snooze" mode to Massive Action mode.',
     ],
   },
-  { id: 3, name: '???', isLocked: true },
-  { id: 4, name: '???', isLocked: true },
+  {
+    id: 3,
+    name: 'Andrei Dunuță',
+    isLocked: false,
+    image: '/assets/danuta.jpeg',
+    bio: [
+      'Antrenor Vânzări & Public Speaking, Fondator „Arta de a NU vinde”',
+      'Andrei Dunuță este fondatorul "Arta de a NU vinde".',
+      'Este antrenor de Public Speaking & Vânzări, TEDx Keynote Speaker, aka omul care îți va arăta că poţi să fii nebun de bun în vânzări & public speaking.',
+      'Lui Andrei i-au trecut prin mână în cei 17+ ani de experiență peste 20.000 de oameni de antreprenori, oameni vânzări și speakeri de la branduri precum: Banca Transilvania, NN Asigurări, RE/MAX, Allianz Asigurări, Coca Cola și multe altele.',
+      'Dar a lucrat și lucrează cu multe asociații de studenți antrenându-i să își vândă mai bine ideile și proiectele.',
+    ],
+  },
   { id: 5, name: '???', isLocked: true },
   { id: 6, name: '???', isLocked: true },
+  {
+    id: 4,
+    name: 'Alexia Simion',
+    isLocked: false,
+    image: '/assets/simion.jpeg',
+    bio: [
+      'Antreprenor și fondator al brandului Arc-en-ciel Atelier, cunoscut pentru produsele sale creative și estetica feminină.',
+      'Îmbină pasiunea pentru design și branding cu dezvoltarea de concepte "cool" de business dedicate noii generații.',
+      'La doar 22 de ani brandul său a depășit granițele României, dezvoltând proiecte și colaborări cu branduri internaționale din industria fashion și beauty.',
+    ],
+  },
 ];
 
 export const SpeakersSection: React.FC = () => {
