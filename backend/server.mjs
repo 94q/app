@@ -259,6 +259,7 @@ app.post('/api/checkout-session', async (req, res) => {
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       customer_creation: 'always',
+      allow_promotion_codes: true,
       name_collection: {
         individual: {
           enabled: true,
