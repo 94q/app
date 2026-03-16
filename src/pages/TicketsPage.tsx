@@ -268,7 +268,7 @@ export const TicketsPage: React.FC = () => {
               <div className="py-6 flex-1">
                 <p className="text-purple-100/90">
                   Full access to all speaker sessions, live performances, and networking receptions. Includes curated
-                  food and drinks throughout the event. Best price available - expires March 1st.
+                  food and drinks throughout the event. Best price available - expires April 1st.
                 </p>
               </div>
               <div className="pt-4 border-t border-white/10 flex items-center justify-between gap-4">
@@ -301,7 +301,7 @@ export const TicketsPage: React.FC = () => {
               <div className="py-6 flex-1">
                 <p className="text-purple-100/90">
                   Premium experience with priority seating in first rows, exclusive pre-event reception with
-                  speakers, private lounge access, priority Q&A, and unlimited F&B. Limited spots - expires March 1st.
+                  speakers, private lounge access, priority Q&A, and unlimited F&B. Limited spots - expires April 1st.
                 </p>
               </div>
               <div className="pt-4 border-t border-white/10 flex items-center justify-between gap-4">
