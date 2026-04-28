@@ -57,7 +57,21 @@ const speakers: Speaker[] = [
       'Dar a lucrat și lucrează cu multe asociații de studenți antrenându-i să își vândă mai bine ideile și proiectele.',
     ],
   },
-  { id: 5, name: '???', isLocked: true },
+  {
+    id: 5,
+    name: 'Mihaela Niță',
+    isLocked: false,
+    image: '/assets/mihaela-nita.jpg',
+    bio: [
+      'Mihaela Niță, medic specialist pediatru.',
+      'Consultant în lactație certificat internațional IBCLC din 2011.',
+      'Doctor în științe medicale cu tema Băncilor de lapte matern.',
+      'Fondatoarea Asociației Consultanților în Lactație din România.',
+      'Președintă a ELACTA (European Lactation Consultants Alliance).',
+      'Organizator de conferințe medicale și speaker.',
+      'Preocupată de medicina preventivă și cum să îi menținem pe copii cât mai mult timp sănătoși.',
+    ],
+  },
   { id: 6, name: '???', isLocked: true },
   {
     id: 4,
