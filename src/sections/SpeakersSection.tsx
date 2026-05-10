@@ -118,7 +118,21 @@ const speakers: Speaker[] = [
       'Interested in how AI agents and intelligent automation can help people focus less on repetitive tasks and more on creativity, innovation, and meaningful ideas.',
     ],
   },
-  { id: 9, name: '???', isLocked: true },
+  {
+    id: 9,
+    name: 'Virjan Darius',
+    isLocked: false,
+    image: '/assets/virjan.jfif',
+    bio: [
+      'Police Academy student, preparing for a future career as Subinspector de poliție within the Organized Crime Division, while also pursuing a future position as prosecutor within DIICOT, Romania’s highest authority for combating organized crime and terrorism.',
+      'Student Battalion Commander, recognized for elite tactical conditioning, operational leadership training, and high-performance team coordination under pressure.',
+      'Certified Firearms Qualification Instructor, while also personally holding advanced firearm qualification standards and tactical weapons proficiency.',
+      'Successfully passed an elite military training program focused on discipline, endurance, resilience, and operational readiness.',
+      'Former professional athlete for the Under-18 division of Club Atletico Madrid, developing a competitive mindset, discipline, and high-level performance standards from an early age.',
+      'NATO Conference Speaker Associate representing the Romanian Police Academy division, contributing to discussions focused on security, leadership, and international cooperation.',
+    ],
+  },
+  { id: 10, name: '???', isLocked: true },
   {
     id: 4,
     name: 'Alexia Simion',
