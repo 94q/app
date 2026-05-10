@@ -2,6 +2,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import type { Variants } from 'framer-motion';
+import { Gift, Users } from 'lucide-react';
 import { FloatingTriangles } from '@/components/FloatingTriangles';
 import { fadeInUp, staggerContainer } from '@/lib/animations';
 
@@ -90,6 +91,44 @@ function getSeatClassName(status: SeatStatus, vip: boolean): string {
     return 'bg-yellow-300 text-black border-yellow-100 shadow-[0_0_16px_rgba(253,224,71,0.8)]';
   }
   return 'bg-green-600/75 text-white border-green-300/80 shadow-[0_0_10px_rgba(34,197,94,0.42)]';
+}
+
+function DuoOfferBadge({ variant }: { variant: 'ga' | 'vip' }) {
+  const isVip = variant === 'vip';
+
+  return (
+    <div
+      className={`mt-5 overflow-hidden rounded-2xl border p-[1px] ${
+        isVip
+          ? 'border-yellow-200/40 bg-gradient-to-r from-yellow-300/55 via-purple-300/45 to-yellow-300/55 shadow-[0_0_28px_rgba(250,204,21,0.18)]'
+          : 'border-purple-200/40 bg-gradient-to-r from-purple-400/55 via-fuchsia-300/40 to-purple-400/55 shadow-[0_0_28px_rgba(168,85,247,0.18)]'
+      }`}
+    >
+      <div className="relative rounded-[15px] bg-black/45 px-4 py-3">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.18),transparent_36%)]" />
+        <div className="relative flex items-start gap-3">
+          <div
+            className={`mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${
+              isVip ? 'bg-yellow-300 text-black' : 'bg-purple-300 text-black'
+            }`}
+          >
+            {isVip ? <Gift className="h-4 w-4" /> : <Users className="h-4 w-4" />}
+          </div>
+          <div>
+            <p className={`text-xs font-bold uppercase tracking-[0.2em] ${isVip ? 'text-yellow-100' : 'text-purple-100'}`}>
+              Limited duo pass
+            </p>
+            <p className="mt-1 text-lg font-semibold leading-snug text-white">
+              Bring your +1 on us
+            </p>
+            <p className="mt-1 text-sm leading-relaxed text-purple-100/85">
+              One checkout unlocks two seats. Perfect for the friend who will regret missing this.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export const TicketsPage: React.FC = () => {
@@ -264,6 +303,7 @@ export const TicketsPage: React.FC = () => {
               <div className="pb-4 border-b border-white/10">
                 <p className="text-xs font-semibold tracking-wider text-purple-200 uppercase">Ticket Tier</p>
                 <h3 className="mt-2 text-2xl font-semibold text-white">Early Bird - General Admission</h3>
+                <DuoOfferBadge variant="ga" />
               </div>
               <div className="py-6 flex-1">
                 <p className="text-purple-100/90">
@@ -297,6 +337,7 @@ export const TicketsPage: React.FC = () => {
                   Limited spots available
                 </span>
                 <h3 className="mt-3 text-2xl font-semibold text-white">Early Bird VIP - The Curator&apos;s Experience</h3>
+                <DuoOfferBadge variant="vip" />
               </div>
               <div className="py-6 flex-1">
                 <p className="text-purple-100/90">

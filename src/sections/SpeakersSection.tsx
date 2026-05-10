@@ -72,7 +72,53 @@ const speakers: Speaker[] = [
       'Preocupată de medicina preventivă și cum să îi menținem pe copii cât mai mult timp sănătoși.',
     ],
   },
-  { id: 6, name: '???', isLocked: true },
+  {
+    id: 6,
+    name: 'Amr Araj',
+    isLocked: false,
+    image: '/assets/amr.jfif',
+    bio: [
+      'Entrepreneur and young innovator passionate about technology, leadership, and human performance.',
+      'Combines interests in AI, business, communication, and self-development to create projects that inspire the next generation to think bigger and act boldly.',
+      'Founder of a profitable fragrance business and creator of AI-powered educational and media initiatives, including an AI-based radio platform for students.',
+      'Researcher in nutrition, peptides, and self-optimization, exploring the connection between science, performance, and modern wellbeing.',
+      'Experienced in website development, digital systems, and emerging technologies, with a focus on innovation, automation, and user experience.',
+      'Award-winning public speaker and competitive debater, recognized for leadership, communication, and mentoring young people in confidence and strategic thinking.',
+      'Organizer of chess tournaments and intellectual events promoting discipline, collaboration, and critical thinking among students.',
+      'Organizer at the TEDx event, exploring the intersection of mindset, innovation, and the future of ambitious young creators.',
+      '"Greatness is built through discipline, vision, and the courage to take action."',
+    ],
+  },
+  {
+    id: 7,
+    name: 'Nicoleta Pauliuc',
+    isLocked: false,
+    image: '/assets/nicoleta.png',
+    bio: [
+      'În 2017, la doar câteva luni după ce a depus jurământul ca senator, Nicoleta Pauliuc a primit un diagnostic care, pentru cei mai mulți, înseamnă sfârșitul: cancer pancreatic. A ales contrariul. A făcut din boală o misiune - și din Parlamentul României, un instrument prin care alți pacienți să poată urca, așa cum spune ea, "în trenul supraviețuitorilor".',
+      'Avocată din 1997, este senator de Ilfov din 2016 și Președinte al Comisiei pentru Apărare, Ordine Publică și Siguranță Națională a Senatului României, prim-vicepreședinte PNL și președinta Organizației Femeilor Liberale.',
+      'Dincolo de funcții, însă, este inițiatoarea unui pachet de legi pe care le numește simplu: "Legi pentru viață". A introdus consiliere psihologică gratuită pentru pacienții oncologici și aparținători și 45 de zile de concediu plătit pentru însoţitorii pacienților de cancer la tratament.',
+      'A propus instituirea Zilei Naționale a Supraviețuitorilor de Cancer, marcată în prima duminică din iunie. A transpus în legislația națională Planul European de Combatere a Cancerului și a introdus în România dreptul pacientului la medicină personalizată - accesul la teste genetice gratuite, la tratamente adaptate, la un dosar electronic care să-l urmeze pe pacient prin sistem.',
+      'A luptat, de asemenea, pentru eliminarea discriminării financiare a foștilor pacienți oncologici - dreptul la credite și asigurări, după șapte ani fără recidivă, în aceleași condiții ca orice cetățean.',
+      'La TEDx povestește cum, uneori, drumul către cea mai bună versiune a ta începe în ziua cea mai grea din viața ta - și lasă în urmă o întrebare pentru fiecare tânăr din sală: ce ai face dacă mâine ai afla că ți-a mai rămas puțin timp? Și ce te oprește să faci asta și acum?',
+    ],
+  },
+  {
+    id: 8,
+    name: 'Vasilescu Andreea',
+    isLocked: false,
+    image: '/assets/vasilescu-andreea.jfif',
+    bio: [
+      'Data Scientist at Microsoft working on software reliability, automation, experimentation systems, and AI-powered solutions.',
+      'Started her journey at Microsoft while still a university student, transitioning from Technical Support Engineering into Data Science and AI-focused work.',
+      'Holds both a Bachelor’s in Computer Science and a Master’s degree in Natural Language Processing from University of Bucharest.',
+      'Speaker at technology conferences and events focused on Artificial Intelligence, Large Language Models, automation, and the future of AI-powered workflows.',
+      'Part of the organisation team behind Azure AI Summer School in 2025, a Microsoft Romania initiative created together with the Polytechnic University of Bucharest.',
+      'Involved in mentoring and educational initiatives focused on technology and AI.',
+      'Interested in how AI agents and intelligent automation can help people focus less on repetitive tasks and more on creativity, innovation, and meaningful ideas.',
+    ],
+  },
+  { id: 9, name: '???', isLocked: true },
   {
     id: 4,
     name: 'Alexia Simion',
@@ -86,24 +132,36 @@ const speakers: Speaker[] = [
   },
 ];
 
+const shuffleSpeakers = (speakerList: Speaker[]) => {
+  const shuffled = [...speakerList];
+
+  for (let i = shuffled.length - 1; i > 0; i -= 1) {
+    const randomIndex = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[i]];
+  }
+
+  return shuffled;
+};
+
 export const SpeakersSection: React.FC = () => {
+  const [shuffledSpeakers] = useState(() => shuffleSpeakers(speakers));
   const [currentIndex, setCurrentIndex] = useState(0);
   const [activeSpeaker, setActiveSpeaker] = useState<Speaker | null>(null);
   const { ref, isInView } = useInView<HTMLElement>({ threshold: 0.2 });
 
   const handlePrev = () => {
-    setCurrentIndex((prev) => (prev === 0 ? speakers.length - 1 : prev - 1));
+    setCurrentIndex((prev) => (prev === 0 ? shuffledSpeakers.length - 1 : prev - 1));
   };
 
   const handleNext = () => {
-    setCurrentIndex((prev) => (prev === speakers.length - 1 ? 0 : prev + 1));
+    setCurrentIndex((prev) => (prev === shuffledSpeakers.length - 1 ? 0 : prev + 1));
   };
 
   const getVisibleSpeakers = () => {
     const visible = [];
     for (let i = -1; i <= 1; i++) {
-      const index = (currentIndex + i + speakers.length) % speakers.length;
-      visible.push({ ...speakers[index], position: i });
+      const index = (currentIndex + i + shuffledSpeakers.length) % shuffledSpeakers.length;
+      visible.push({ ...shuffledSpeakers[index], position: i });
     }
     return visible;
   };
