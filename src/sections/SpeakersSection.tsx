@@ -132,7 +132,18 @@ const speakers: Speaker[] = [
       'NATO Conference Speaker Associate representing the Romanian Police Academy division, contributing to discussions focused on security, leadership, and international cooperation.',
     ],
   },
-  { id: 10, name: '???', isLocked: true },
+  {
+    id: 10,
+    name: 'Corina Cucoli',
+    isLocked: false,
+    image: '/assets/corina.jfif',
+    bio: [
+      'Corina Cucoli is a senior executive and management consultant with over 25 years of experience in business development, financial services, restructuring, and strategic leadership across insurance, pensions, banking, manufacturing, and healthcare industries.',
+      'She has held CEO and Board-level roles within major organizations including BT Pensii, Certinvest Pensii, UNIQA, Aviva Romania, and KPMG Romania, leading business transformation, M&A integration, operational growth, and governance initiatives.',
+      'Corina is recognized for her strategic vision, leadership capabilities, and expertise in building partnerships, driving organizational performance, and managing complex projects across regional and international markets.',
+      'She holds a Ph.D. in Economics from the Academy of Economic Studies in Bucharest and has completed executive programs at Harvard Business School and INSEAD.',
+    ],
+  },
   {
     id: 4,
     name: 'Alexia Simion',

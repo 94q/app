@@ -5,6 +5,13 @@ import { FloatingTriangles } from '@/components/FloatingTriangles';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { fadeInUp, staggerContainer } from '@/lib/animations';
 
+type FaqAnswerLine = string | {
+  name: string;
+  phone: string;
+};
+
+const phoneHref = (phone: string) => `tel:${phone.replace(/[^\d+]/g, '')}`;
+
 const faqs = [
   {
     question: 'Where will the event take place?',
@@ -58,7 +65,7 @@ const faqs = [
       'Bank transfer',
       'Installments (3 payments)',
       'For alternative payment methods, please contact our Lead of Development & Co-Lead of Management:',
-      'Andrei P. — +40 752 270 011',
+      { name: 'Andrei P.', phone: '+40 752 270 011' },
     ],
   },
   {
@@ -71,8 +78,8 @@ const faqs = [
     question: 'How can I contact customer support?',
     answer: [
       'For any questions or assistance, please contact us directly:',
-      'Amr A. — +40 731 825 888',
-      'Andrei P. — +40 752 270 011',
+      { name: 'Amr A.', phone: '+40 731 825 888' },
+      { name: 'Andrei P.', phone: '+40 752 270 011' },
       'Fast response times.',
     ],
   },
@@ -131,9 +138,21 @@ export const FAQPage: React.FC = () => {
                   </AccordionTrigger>
                   <AccordionContent className="text-purple-100/90 text-base md:text-lg pb-6">
                     <div className="space-y-3">
-                      {faq.answer.map((line) => (
-                        <p key={line} className="leading-relaxed">
-                          {line}
+                      {faq.answer.map((line: FaqAnswerLine) => (
+                        <p key={typeof line === 'string' ? line : `${line.name}-${line.phone}`} className="leading-relaxed">
+                          {typeof line === 'string' ? (
+                            line
+                          ) : (
+                            <>
+                              {line.name} -{' '}
+                              <a
+                                href={phoneHref(line.phone)}
+                                className="font-semibold text-white underline decoration-purple-200/60 underline-offset-4 transition-colors hover:text-purple-100"
+                              >
+                                {line.phone}
+                              </a>
+                            </>
+                          )}
                         </p>
                       ))}
                     </div>

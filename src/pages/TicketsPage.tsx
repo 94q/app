@@ -2,7 +2,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import type { Variants } from 'framer-motion';
-import { Gift, Users } from 'lucide-react';
+import { Gift, Loader2, Users } from 'lucide-react';
 import { FloatingTriangles } from '@/components/FloatingTriangles';
 import { fadeInUp, staggerContainer } from '@/lib/animations';
 
@@ -136,6 +136,8 @@ export const TicketsPage: React.FC = () => {
   const [showUpgradeNote, setShowUpgradeNote] = useState(false);
   const [selectorTier, setSelectorTier] = useState<TicketTier | null>(null);
   const [selectedSeatId, setSelectedSeatId] = useState<string | null>(null);
+  const [showCheckoutNotice, setShowCheckoutNotice] = useState(false);
+  const [noticeCountdown, setNoticeCountdown] = useState(5);
   const [redirecting, setRedirecting] = useState(false);
   const [soldSeats, setSoldSeats] = useState<Set<string>>(new Set());
   const [checkoutMessage, setCheckoutMessage] = useState<string | null>(null);
@@ -200,6 +202,24 @@ export const TicketsPage: React.FC = () => {
     setCheckoutMessage('Payment canceled. Your seat is still available.');
   }, [location.search]);
 
+  useEffect(() => {
+    if (!showCheckoutNotice) return;
+
+    setNoticeCountdown(5);
+    const timer = window.setInterval(() => {
+      setNoticeCountdown((current) => {
+        if (current <= 1) {
+          window.clearInterval(timer);
+          return 0;
+        }
+
+        return current - 1;
+      });
+    }, 1000);
+
+    return () => window.clearInterval(timer);
+  }, [showCheckoutNotice]);
+
   const selectorTitle = useMemo(() => {
     if (selectorTier === 'ga') return 'Choose Your General Admission Seat';
     if (selectorTier === 'vip') return 'Choose Your VIP Seat';
@@ -212,6 +232,8 @@ export const TicketsPage: React.FC = () => {
   const openSeatSelector = (tier: TicketTier) => {
     setSelectorTier(tier);
     setSelectedSeatId(null);
+    setShowCheckoutNotice(false);
+    setNoticeCountdown(5);
     setRedirecting(false);
     setCheckoutMessage(null);
   };
@@ -219,7 +241,16 @@ export const TicketsPage: React.FC = () => {
   const closeSeatSelector = () => {
     setSelectorTier(null);
     setSelectedSeatId(null);
+    setShowCheckoutNotice(false);
+    setNoticeCountdown(5);
     setRedirecting(false);
+  };
+
+  const closeCheckoutNotice = () => {
+    if (redirecting) return;
+
+    setShowCheckoutNotice(false);
+    setNoticeCountdown(5);
   };
 
   const handleSeatPick = (section: SeatSection, row: (typeof ROWS)[number], number: number) => {
@@ -233,6 +264,13 @@ export const TicketsPage: React.FC = () => {
 
   const handleBuySelectedSeat = async () => {
     if (!selectorTier || !selectedSeatId || redirecting) return;
+
+    setShowCheckoutNotice(true);
+    setCheckoutMessage(null);
+  };
+
+  const continueToCheckout = async () => {
+    if (!selectorTier || !selectedSeatId || redirecting || noticeCountdown > 0) return;
 
     setRedirecting(true);
     setCheckoutMessage(null);
@@ -308,7 +346,7 @@ export const TicketsPage: React.FC = () => {
               <div className="py-6 flex-1">
                 <p className="text-purple-100/90">
                   Full access to all speaker sessions, live performances, and networking receptions. Includes curated
-                  food and drinks throughout the event. Best price available - expires April 1st.
+                  food and drinks throughout the event. Best price available.
                 </p>
               </div>
               <div className="pt-4 border-t border-white/10 flex items-center justify-between gap-4">
@@ -342,7 +380,7 @@ export const TicketsPage: React.FC = () => {
               <div className="py-6 flex-1">
                 <p className="text-purple-100/90">
                   Premium experience with priority seating in first rows, exclusive pre-event reception with
-                  speakers, private lounge access, priority Q&A, and unlimited F&B. Limited spots - expires April 1st.
+                  speakers, private lounge access, priority Q&A, and unlimited F&B. Limited spots.
                 </p>
               </div>
               <div className="pt-4 border-t border-white/10 flex items-center justify-between gap-4">
@@ -576,7 +614,7 @@ export const TicketsPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={handleBuySelectedSeat}
-                    disabled={!selectedSeatId || redirecting}
+                    disabled={!selectedSeatId || redirecting || showCheckoutNotice}
                     className="mt-3 w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {redirecting ? 'Redirecting...' : 'Buy Selected Seat'}
@@ -585,6 +623,78 @@ export const TicketsPage: React.FC = () => {
               </div>
 
               {checkoutMessage && <p className="mt-3 text-xs md:text-sm text-white/75">{checkoutMessage}</p>}
+            </motion.div>
+          </div>
+        )}
+
+        {showCheckoutNotice && (
+          <div className="fixed inset-0 z-[60] flex items-center justify-center px-6">
+            <motion.div
+              className="absolute inset-0 bg-black/90"
+              onClick={closeCheckoutNotice}
+              role="button"
+              aria-label="Close checkout notice"
+              tabIndex={0}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            />
+            <motion.div
+              className="relative z-10 w-full max-w-md rounded-2xl border border-white/15 bg-[#1f1430] shadow-2xl shadow-purple-900/60 p-8 text-white"
+              initial={{ opacity: 0, y: 12, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 8, scale: 0.98 }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div className="pl-1">
+                  <h4 className="mt-2 text-2xl font-semibold tracking-wide">Notice</h4>
+                </div>
+                <button
+                  type="button"
+                  onClick={closeCheckoutNotice}
+                  disabled={redirecting}
+                  className="text-white/70 hover:text-white transition-colors p-2 -m-2 rounded-full hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50"
+                  aria-label="Close"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                    className="h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </button>
+              </div>
+              <p className="mt-6 text-lg leading-relaxed text-purple-100/90 pl-1">
+                After you purchase your ticket, to claim your 1+1 offer, please message our team on WhatsApp at{' '}
+                <a
+                  href="tel:+40752270011"
+                  className="font-semibold text-white underline decoration-purple-200/60 underline-offset-4 transition-colors hover:text-purple-100"
+                >
+                  +40 752 270 011
+                </a>{' '}
+                (Andrei P.). We will help you confirm the additional seat.
+              </p>
+              <button
+                type="button"
+                onClick={continueToCheckout}
+                disabled={noticeCountdown > 0 || redirecting}
+                className="mt-7 w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span className="inline-flex items-center justify-center gap-2">
+                  {(noticeCountdown > 0 || redirecting) && <Loader2 className="h-4 w-4 animate-spin" />}
+                  {redirecting ? 'Redirecting...' : noticeCountdown > 0 ? `Continue (${noticeCountdown})` : 'Continue'}
+                </span>
+              </button>
             </motion.div>
           </div>
         )}

@@ -12,15 +12,17 @@ interface TeamMember {
 
 const teamMembers: TeamMember[] = [
   { name: 'Amr A.', role: 'Lead Management', shapeColor: 'bg-yellow-400' },
-  { name: 'Maya H.', role: 'Co-Lead Management', shapeColor: 'bg-teal-400' },
   { name: 'Andrei P.', role: 'Lead of Development & Co-Lead Management', shapeColor: 'bg-purple-400' },
+  { name: 'Maya H.', role: 'Co-Lead Management', shapeColor: 'bg-teal-400' },
 ];
 
 const contactLeads = [
   { name: 'Amr A.', role: 'Lead Management', phone: '+40 731 825 888' },
-  { name: 'Maya H.', role: 'Co-Lead Management', phone: '+40 775 580 671' },
   { name: 'Andrei P.', role: 'Lead of Development & Co-Lead Management', phone: '+40 752 270 011' },
+  { name: 'Maya H.', role: 'Co-Lead Management', phone: '+40 775 580 671' },
 ];
+
+const phoneHref = (phone: string) => `tel:${phone.replace(/[^\d+]/g, '')}`;
 
 const TriangleShape: React.FC<{ color: string; className?: string }> = ({
   color,
@@ -249,8 +251,13 @@ export const TeamSection: React.FC = () => {
                             transition={{ duration: 0.25, ease: 'easeOut' }}
                             className="overflow-hidden"
                           >
-                            <p className="mt-4 text-lg text-white">
-                              {lead.phone}
+                            <p className="mt-4 text-lg">
+                              <a
+                                href={phoneHref(lead.phone)}
+                                className="font-semibold text-white underline decoration-purple-200/60 underline-offset-4 transition-colors hover:text-purple-100"
+                              >
+                                {lead.phone}
+                              </a>
                             </p>
                           </motion.div>
                         ) : null}
