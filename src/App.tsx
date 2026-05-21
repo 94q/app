@@ -1,6 +1,7 @@
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { useEffect, useLayoutEffect } from 'react';
 import { Navigation } from '@/components/Navigation';
+import { CountdownBar } from '@/components/CountdownBar';
 import { CookieBanner } from '@/components/CookieBanner';
 import { HomePage } from '@/pages/HomePage';
 import { TicketsPage } from '@/pages/TicketsPage';
@@ -37,6 +38,9 @@ function App() {
 
   return (
     <div className="relative bg-black min-h-screen">
+      {/* Site-wide countdown */}
+      <CountdownBar />
+
       {/* Navigation */}
       <Navigation />
 
