@@ -354,6 +354,19 @@
   50% { transform: scale(1.35); opacity: 1; }
 }
 
+@keyframes tedx-contact-ticker {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.tedx-contact-ticker {
+  animation: tedx-contact-ticker 22s linear infinite;
+}
+
 .vip-seat-premium {
   overflow: visible;
   animation: vip-premium-halo 1.8s ease-in-out infinite;
